@@ -1,7 +1,7 @@
 class Cart < ActiveRecord::Base
   has_many :line_items, dependent: :destroy
   belongs_to :user
-  belongs_to :order
+  has_one :order
 
   def add_product(product, quantity=1)
     line_item = matching_line_item(product) ||

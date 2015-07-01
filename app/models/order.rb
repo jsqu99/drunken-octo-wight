@@ -1,25 +1,4 @@
-require_relative 'line_item'
-
-class Order
-  attr_reader :line_items
-  attr_writer :line_item_source
-
-  def initialize
-    @line_items = []
-  end
-
-  def add_to_cart(line_item)
-    @line_items << line_item
-  end
-
-  def new_line_item
-    line_item_source.call.tap do |p|
-      p.order = self
-    end
-  end
-
-  private
-    def line_item_source
-      @line_item_source ||= LineItem.public_method(:new)
-    end
+class Order < ActiveRecord::Base
+  belongs_to :cart
+  has_one :shipping_address #optional - if we only have subscription line items, each line item will have it's own shipping address
 end

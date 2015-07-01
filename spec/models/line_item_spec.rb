@@ -19,11 +19,11 @@ describe LineItem do
   end
 
   it "destroys itself when setting quantity to zero" do
-    @cart = Cart.new(currency: 'USD')
-    line_item = @cart.add_product(product1)
+    cart = Cart.new(currency: 'USD')
+    line_item = cart.add_product(product1)
 
     line_item.change_quantity 0
-    expect(@cart.line_items.size).to eq(0)
+    expect(cart.line_items.size).to eq(0)
   end
 
   it "finds a line item in a collection for an id" do
@@ -33,5 +33,36 @@ describe LineItem do
 
   it "returns a NulLineItem in a collection for a non-existent id" do
     expect(LineItem.for_id_from_collection(1234, [@line_item]).class).to eq(NullLineItem)
+  end
+
+  context "#shipping_address" do
+    it "should return the shipping address from the customization" do
+      address = ShippingAddress.new(fake_string: 'foo')
+      customization = @line_item.customizations.build
+      customization.customizable =  address
+      expect(@line_item.shipping_address).to eq(address)
+    end
+
+    it "should return the shipping address from the order" do
+      cart = Cart.new(currency: 'USD')
+      @line_item.cart = cart
+      order = Order.new(cart: cart)
+      expect(order).to receive(:shipping_address)
+      @line_item.shipping_address
+    end
+  end
+end
+
+describe NullLineItem do
+  before do
+    @line_item = NullLineItem.new
+  end
+
+  it 'supports #change_quantity' do
+    expect(@line_item.change_quantity(1)).to be_truthy
+  end
+
+  it 'supports #destroy' do
+    expect(@line_item.destroy).to be_truthy
   end
 end

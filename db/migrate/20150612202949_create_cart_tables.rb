@@ -19,7 +19,6 @@ class CreateCartTables < ActiveRecord::Migration
 
     create_table :carts do |t|
       t.references :user
-      t.references :order
       t.string :currency, null: false
       t.timestamps
     end

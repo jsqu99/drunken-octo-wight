@@ -3,7 +3,8 @@ require 'money'
 class LineItem < ActiveRecord::Base
   belongs_to :product
   belongs_to :cart
-
+  has_many :customizations, class_name: "LineItemCustomization"
+  delegate :order, to: :cart
   monetize :unit_price
 
   def initialize(params={})
@@ -25,6 +26,16 @@ class LineItem < ActiveRecord::Base
 
     write_attribute :unit_price_cents,    value.cents
     write_attribute :unit_price_currency, value.currency_as_string
+  end
+
+  # If our item is something like a subscription with an embedded address, use that,
+  # otherwise use the order-level shipping address
+  def shipping_address
+    source = customizations.detect {
+       |cust| cust.shipping_address?
+    } || order
+
+    source.shipping_address
   end
 
   def self.for_id_from_collection(id, items)
