@@ -17,6 +17,11 @@ class CreateCartTables < ActiveRecord::Migration
       t.references :cart, null: false
     end
 
+    create_table :invoices do |t|
+      t.references :order, null: false
+      t.monetize :total, null: false
+    end
+
     create_table :carts do |t|
       t.references :user
       t.string :currency, null: false

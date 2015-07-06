@@ -11,13 +11,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630185026) do
+ActiveRecord::Schema.define(version: 20150701203344) do
+
+  create_table "billing_address", force: :cascade do |t|
+    t.string "fake_string", null: false
+  end
 
   create_table "carts", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "currency",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "credit_cards", force: :cascade do |t|
+    t.string   "name_on_card",                          null: false
+    t.string   "month",                                 null: false
+    t.string   "year",                                  null: false
+    t.string   "last_digits",                 limit: 4, null: false
+    t.integer  "billing_address_id",                    null: false
+    t.string   "gateway_customer_profile_id"
+    t.string   "gateway_payment_profile_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer "order_id",                       null: false
+    t.integer "total_cents",    default: 0,     null: false
+    t.string  "total_currency", default: "USD", null: false
   end
 
   create_table "line_item_customizations", force: :cascade do |t|
@@ -38,8 +60,27 @@ ActiveRecord::Schema.define(version: 20150630185026) do
     t.datetime "updated_at"
   end
 
+  create_table "order_adjustments", force: :cascade do |t|
+    t.integer  "order_id",                        null: false
+    t.string   "description",                     null: false
+    t.integer  "amount_cents",    default: 0,     null: false
+    t.string   "amount_currency", default: "USD", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.integer "cart_id", null: false
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.integer  "order_id",                        null: false
+    t.integer  "source_id"
+    t.string   "source_type"
+    t.integer  "amount_cents",    default: 0,     null: false
+    t.string   "amount_currency", default: "USD", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "product_prices", force: :cascade do |t|

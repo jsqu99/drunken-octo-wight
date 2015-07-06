@@ -31,11 +31,12 @@ class LineItem < ActiveRecord::Base
   # If our item is something like a subscription with an embedded address, use that,
   # otherwise use the order-level shipping address
   def shipping_address
-    source = customizations.detect {
-       |cust| cust.shipping_address?
-    } || order
-
+    source = shipping_address_customization || order
     source.shipping_address
+  end
+
+  def has_own_shipping_address?
+    shipping_address_customization.present?
   end
 
   def self.for_id_from_collection(id, items)
@@ -43,6 +44,12 @@ class LineItem < ActiveRecord::Base
   end
 
   private
+    def shipping_address_customization
+      customizations.detect {
+       |cust| cust.shipping_address?
+      }
+    end
+
     def destroy_if_empty
       cart.line_items.destroy(self) and return true if self.quantity <= 0
       false

@@ -35,20 +35,35 @@ describe LineItem do
     expect(LineItem.for_id_from_collection(1234, [@line_item]).class).to eq(NullLineItem)
   end
 
-  context "#shipping_address" do
-    it "should return the shipping address from the customization" do
-      address = ShippingAddress.new(fake_string: 'foo')
-      customization = @line_item.customizations.build
-      customization.customizable =  address
-      expect(@line_item.shipping_address).to eq(address)
+  context "#customizations" do
+    context "#shipping_address" do
+      before do
+        @address = ShippingAddress.new(fake_string: 'foo')
+        customization = @line_item.customizations.build
+        customization.customizable =  @address
+      end
+
+      it "returns the shipping address from the customization" do
+        expect(@line_item.shipping_address).to eq(@address)
+      end
+
+      it "knows it has it's own shipping address" do
+        expect(@line_item.has_own_shipping_address?).to be_truthy
+      end
     end
 
-    it "should return the shipping address from the order" do
-      cart = Cart.new(currency: 'USD')
-      @line_item.cart = cart
-      order = Order.new(cart: cart)
-      expect(order).to receive(:shipping_address)
-      @line_item.shipping_address
+    context "#no shipping address" do
+      it "returns the shipping address from the order" do
+        cart = Cart.new(currency: 'USD')
+        @line_item.cart = cart
+        order = Order.new(cart: cart)
+        expect(order).to receive(:shipping_address)
+        @line_item.shipping_address
+      end
+
+      it "knows it does not have it's own shipping address" do
+        expect(@line_item.has_own_shipping_address?).to be_falsey
+      end
     end
   end
 end

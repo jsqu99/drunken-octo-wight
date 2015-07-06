@@ -8,9 +8,13 @@ class CreateLineItemCustomizations < ActiveRecord::Migration
       t.timestamps
     end
 
-    # I need a table with this name for testing.
-    # this will be replaced by lootcrate repo's version
+    # I need tables with these names for testing.
+    # These will be replaced by lootcrate repo's version
     create_table :shipping_addresses do |t|
+      t.string   :fake_string, null: false
+    end
+
+    create_table :billing_address do |t|
       t.string   :fake_string, null: false
     end
 
