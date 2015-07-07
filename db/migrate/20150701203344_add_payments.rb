@@ -1,8 +1,9 @@
 class AddPayments < ActiveRecord::Migration
   def change
     create_table :payments do |t|
-      t.references :order, null: false
+      t.references :invoice, null: false
       t.references :source, :polymorphic => true
+      t.string :transaction_id
       t.monetize  :amount, null: false
       t.timestamps
     end

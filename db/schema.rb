@@ -36,6 +36,16 @@ ActiveRecord::Schema.define(version: 20150701203344) do
     t.datetime "updated_at"
   end
 
+  create_table "invoice_adjustments", force: :cascade do |t|
+    t.integer  "invoice_id",                      null: false
+    t.string   "type",                            null: false
+    t.string   "description",                     null: false
+    t.integer  "amount_cents",    default: 0,     null: false
+    t.string   "amount_currency", default: "USD", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.integer "order_id",                       null: false
     t.integer "total_cents",    default: 0,     null: false
@@ -60,23 +70,15 @@ ActiveRecord::Schema.define(version: 20150701203344) do
     t.datetime "updated_at"
   end
 
-  create_table "order_adjustments", force: :cascade do |t|
-    t.integer  "order_id",                        null: false
-    t.string   "description",                     null: false
-    t.integer  "amount_cents",    default: 0,     null: false
-    t.string   "amount_currency", default: "USD", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "orders", force: :cascade do |t|
     t.integer "cart_id", null: false
   end
 
   create_table "payments", force: :cascade do |t|
-    t.integer  "order_id",                        null: false
+    t.integer  "invoice_id",                      null: false
     t.integer  "source_id"
     t.string   "source_type"
+    t.string   "transaction_id"
     t.integer  "amount_cents",    default: 0,     null: false
     t.string   "amount_currency", default: "USD", null: false
     t.datetime "created_at"

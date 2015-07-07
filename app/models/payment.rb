@@ -1,8 +1,8 @@
-class OrderAdjustment < ActiveRecord::Base
+class Payment < ActiveRecord::Base
   belongs_to :invoice
+  belongs_to :source, polymorphic: true
 
-  validates :description, presence: true
-  monetize :amount, null: false
+  monetize :amount
 
   def amount
     Money.new amount_cents, amount_currency

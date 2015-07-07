@@ -2,7 +2,7 @@ class CreateCartTables < ActiveRecord::Migration
   def change
     create_table :line_items do |t|
       t.references :product, null: false
-      t.references :cart
+      t.references :cart, index: true
       t.integer    :quantity, null: false
       t.monetize  :unit_price, null: false
       t.timestamps
@@ -10,20 +10,20 @@ class CreateCartTables < ActiveRecord::Migration
 
     create_table :product_prices do |t|
       t.references :product, index: true
-      t.monetize :price #, null: false ?
+      t.monetize :price, null: false
     end
 
     create_table :orders do |t|
-      t.references :cart, null: false
+      t.references :cart, index: true, null: false
     end
 
     create_table :invoices do |t|
-      t.references :order, null: false
-      t.monetize :total, null: false
+      t.references :order, index: true, null: false
+      t.monetize :total
     end
 
     create_table :carts do |t|
-      t.references :user
+      t.references :user, index: true
       t.string :currency, null: false
       t.timestamps
     end
